@@ -65,6 +65,17 @@ boot_read_image_header(struct boot_loader_state *state, int slot,
 
     off = 0;
     if (bs) {
+        BOOT_LOG_INF("boot slot 0 magic %u", BOOT_IMG(state, 0).hdr.ih_magic);
+        BOOT_LOG_INF("boot slot 0 ih_load_addr %u",  BOOT_IMG(state, 0).hdr.ih_load_addr   );
+
+        BOOT_LOG_INF("boot slot 1 magic %u", BOOT_IMG(state, 1).hdr.ih_magic);
+        BOOT_LOG_INF("boot slot 1 ih_load_addr %u",  BOOT_IMG(state, 1).hdr.ih_load_addr   );
+
+        if ( BOOT_IMG(state, 1).hdr.ih_magic != IMAGE_MAGIC) {
+            BOOT_LOG_INF("Invalid magic for slot 1. Force-disable swap");
+            bs->op = 0;
+        }
+
         sz = boot_img_sector_size(state, BOOT_PRIMARY_SLOT, 0);
         if (bs->op == BOOT_STATUS_OP_MOVE) {
             if (slot == 0 && bs->idx > g_last_idx) {
