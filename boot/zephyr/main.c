@@ -20,6 +20,7 @@
 #include <zephyr.h>
 #include <drivers/gpio.h>
 #include <sys/__assert.h>
+#include <sys/reboot.h>
 #include <drivers/flash.h>
 #include <drivers/timer/system_timer.h>
 #include <usb/usb_device.h>
@@ -467,6 +468,17 @@ void main(void)
     }
 #endif
 
+// XXX: check that the image1 device is ready, otherwise reboot after a delay.
+// https://taggr.atlassian.net/browse/TAGGR-1017
+#define IMAGE1_FLASH_DEVICE DT_LABEL(DT_NODELABEL(mx25r))
+#if ( defined(IMAGE1_FLASH_DEVICE) )
+    if (!device_is_ready(device_get_binding(IMAGE1_FLASH_DEVICE))) {
+        BOOT_LOG_ERR("Flash device %s not ready", IMAGE1_FLASH_DEVICE);
+        k_msleep(1000);
+        sys_reboot(SYS_REBOOT_COLD);
+    }
+#endif
+    
 #ifdef CONFIG_MCUBOOT_SERIAL
     if (detect_pin(CONFIG_BOOT_SERIAL_DETECT_PORT,
                    CONFIG_BOOT_SERIAL_DETECT_PIN,
