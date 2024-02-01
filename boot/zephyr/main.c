@@ -471,7 +471,7 @@ void main(void)
 // XXX: check that the image1 device is ready, otherwise reboot after a delay.
 // https://taggr.atlassian.net/browse/TAGGR-1017
 #define IMAGE1_FLASH_DEVICE DT_LABEL(DT_NODELABEL(mx25r))
-#if ( DT_NODE_EXISTS(IMAGE1_FLASH_DEVICE) && defined(IMAGE1_FLASH_DEVICE) )
+#if (DT_NODE_EXISTS(DT_NODELABEL(mx25r)))
     if (!device_is_ready(device_get_binding(IMAGE1_FLASH_DEVICE))) {
         BOOT_LOG_ERR("Flash device %s not ready", IMAGE1_FLASH_DEVICE);
         k_msleep(1000);
